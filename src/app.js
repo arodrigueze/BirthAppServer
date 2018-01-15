@@ -1,16 +1,21 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var configurationServer = require('./configServer');
 var app = express();
 
 /*Route for person */
 var person = require('./routes/person');
 app.use('/person', person);
 
+/*Route for send email to users */
+var sendEmail = require('./routes/sendEmail');
+app.use('/sendEmail', sendEmail);
+
 /*Connection to mongodb using mongoose */
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/birthapp", function (err) {
+mongoose.connect(configurationServer.mongodbURL, function (err) {
   if (err) {
     console.log("Error de conexion mongodb");
     console.log(err);
