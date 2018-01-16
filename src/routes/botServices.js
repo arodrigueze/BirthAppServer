@@ -11,8 +11,22 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users 
 router.post('/messages', connector.listen());
 
-var bot = new builder.UniversalBot(connector, function (session) {
-    session.send("You said: %s", session.message.text);
-});
+var bot = new builder.UniversalBot(connector, [
+
+    (session) => {
+        session.send("Welcome to the PSL Birthday bot!")
+        builder.Prompts.choice(session, "Do you wish to be continually notified of your teammates birthdays?", ["Yes", "No"], { listStyle: builder.ListStyle.button });
+    },
+    (session, results) => {
+        if(results.response.entity === "Yes"){
+            session.send("Great, I´ll be in touch then!");
+        }
+        else{
+            session.send("Alright, hit me up when you do!");
+        }
+        session.endDialog();
+    }
+
+]);
 
 module.exports = router;
