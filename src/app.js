@@ -1,4 +1,3 @@
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var configurationServer = require('./configServer');
@@ -11,6 +10,10 @@ app.use('/person', person);
 /*Route for send email to users */
 var sendEmail = require('./routes/sendEmail');
 app.use('/sendEmail', sendEmail);
+
+/*Route for bot chat */
+var botService = require('./routes/botServices');
+app.use('/bot', botService);
 
 /*Connection to mongodb using mongoose */
 var mongoose = require("mongoose");
