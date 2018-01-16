@@ -2,8 +2,10 @@
   "name": "birthreminderserver",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +15,11 @@
     "express": "^4.16.2",
     "mongoose": "^4.13.9",
     "nodemailer": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^9.3.0",
+    "nodemon": "^1.14.11",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.6.2"
   }
 }
