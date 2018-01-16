@@ -4,8 +4,6 @@ var PersonORM = require('../model/personModel.js');
 
 /* End point create person*/
 router.get('/create', function (req, res, next) {
-    console.log("Attemp create person");
-    console.log(req.query.email);
    
     var datoPerson = req.query;
 

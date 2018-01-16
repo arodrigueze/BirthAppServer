@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var personSchema = new Schema({
     emailPerson:String,
     namePerson:String,
-    birthdatePerson:String
+    birthdatePerson:String,
+    id_team: String
 });
 
 var Person = mongoose.model('Person', personSchema);
