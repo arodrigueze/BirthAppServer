@@ -1,32 +1,17 @@
 var express = require('express');
 var router = express.Router();
-var nodemailer = require('nodemailer');
-var configurationServer = require('../configServer');
+var emailSender = require('../utils/email');
 
-
-
-router.get('/send', function (req, res, next) {
-
-    var transporter = nodemailer.createTransport({
-        service: configurationServer.emailProvider,
-        auth: {
-            user: configurationServer.emailUser,
-            pass: configurationServer.emailPass
+router.post('/', function (req, res, next) {
+    var email = new emailSender();
+    email.sendEmail(req.body.email, function (status) {
+        if (status) {
+            console.log("email send " + status);
+            res.json({ "status": "email sent successfully" });
         }
-    });
-
-    var mailOptions = {
-        from: configurationServer.emailUser,
-        to: req.query.email,
-        subject: 'Recordatorio Cumpleaños',
-        text: 'En PSL nos importa nuestros empleados, vincúlate al servicio de recordatorio de cumpleaños en: https://www.google.com '
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.send(info);
+        else {
+            console.log("email send " + status);
+            res.json({ "status": "Error sending email" });
         }
     });
 });

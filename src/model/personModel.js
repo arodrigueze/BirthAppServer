@@ -5,7 +5,8 @@ var personSchema = new Schema({
     emailPerson:String,
     namePerson:String,
     birthdatePerson:String,
-    id_team: String
+    teamId: String,
+    subscribed: String
 });
 
 var Person = mongoose.model('Person', personSchema);
