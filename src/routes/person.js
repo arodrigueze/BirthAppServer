@@ -11,7 +11,7 @@ router.post('/create', function (req, res, next) {
         emailPerson: datoPerson.email,
         namePerson: datoPerson.name,
         birthdatePerson: datoPerson.birthdate,
-        id_team: datoPerson.teamId
+        teamId: datoPerson.teamId
     }
 
     var person = new PersonORM(dataPerson);
