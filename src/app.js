@@ -11,6 +11,10 @@ app.use('/person', person);
 var sendEmail = require('./routes/sendEmail');
 app.use('/sendEmail', sendEmail);
 
+/*Route for team */
+var team = require('./routes/team');
+app.use('/team', team);
+
 /*Route for bot chat */
 var botService = require('./routes/botServices');
 app.use('/bot', botService);

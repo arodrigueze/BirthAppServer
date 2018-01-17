@@ -20,7 +20,7 @@ router.get('/create', function (req, res, next) {
             console.log(err);
             res.send(err);
         } else {
-            console.log("Creado con exito");
+            console.log("Person created on db");
             res.send(createdTodoObject);
         }
     });

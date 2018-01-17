@@ -18,8 +18,8 @@ router.get('/send', function (req, res, next) {
     var mailOptions = {
         from: configurationServer.emailUser,
         to: req.query.email,
-        subject: 'Recordatorio Cumpleaños',
-        text: 'En PSL nos importa nuestros empleados, vincúlate al servicio de recordatorio de cumpleaños en: https://www.google.com '
+        subject: configurationServer.subject,
+        text: configurationServer.emailMessage
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
