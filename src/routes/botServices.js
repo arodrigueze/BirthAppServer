@@ -15,18 +15,75 @@ var bot = new builder.UniversalBot(connector, [
 
     (session) => {
         session.send("Welcome to the PSL Birthday bot!")
-        builder.Prompts.choice(session, "Do you wish to be continually notified of your teammates birthdays?", ["Yes", "No"], { listStyle: builder.ListStyle.button });
+        session.beginDialog('initialQuestion')
     },
     (session, results) => {
-        if(results.response.entity === "Yes"){
-            session.send("Great, I´ll be in touch then!");
+
+        var answerInitialQuestion = results.response.entity;        
+
+        if(answerInitialQuestion === 'Sure!') {
+            session.beginDialog('birthdayConfirmation')
         }
-        else{
-            session.send("Alright, hit me up when you do!");
+        else {
+            session.endDialog('Ok, you can always talk me later if you change your mind.')
         }
-        session.endDialog();
+
+    },
+    (session, results) => {
+
+        var answerBirthday = results.response.entity;
+
+        if(answerBirthday === 'Hell yeah!'){
+            session.beginDialog('birthdayMessage');
+        }
+        else if(answerBirthday === 'Nah, screw that guy'){
+            session.endDialog('That\'s to bad');
+        }
+        else {
+            session.endConversation('Goodbye!');
+        }
+
+    },
+    (session, results) => {
+
+        session.send('Ok! I\'ll make sure to tell him you said: ' + results.response);
+        session.endConversation('Goodbye!');
+
     }
 
 ]);
+
+var initialQuestionDIalog = bot.dialog('initialQuestion', [
+
+    (session) => {
+        builder.Prompts.choice(session, 'Do you wish to be continually notified of your teammates birthdays?', ['Sure!', 'Not really...'], { listStyle: builder.ListStyle.button });
+    },
+    (session, results) => {
+        session.endDialogWithResult(results);
+    }
+
+]);
+
+var birthdayConfirmationDialog = bot.dialog('birthdayConfirmation', [
+
+    (session) => {
+        builder.Prompts.choice(session, 'It\'s Foo\'s irthday tomorrow, you work with him in the Bar team.\nDo you wish to send him a message?', ['Hell yeah!', 'Nah, screw that guy'], { listStyle: builder.ListStyle.button });
+    },
+    (session, results) => {
+        session.endDialogWithResult(results);
+    }
+
+]);
+
+var birthdayMessageDialog = bot.dialog('birthdayMessage', 
+
+    (session) => {
+        builder.Prompts.text(session, 'What do you wish to tell him?');
+    },
+    (session, results) => {
+        session.endDialogWithResult(results);
+    }
+
+);
 
 module.exports = router;
