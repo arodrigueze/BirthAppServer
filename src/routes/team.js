@@ -4,7 +4,7 @@ var TeamDB = require('../model/teamModel.js');
 var validationTeam = require('../utils/validations');
 
 /* End point create team*/
-router.get('/create', function (req, res, next) {
+router.post('/create', function (req, res, next) {
     
     var datoTeam = req.query;
     
@@ -39,5 +39,16 @@ router.get('/create', function (req, res, next) {
         });
     }
 });
+
+/* End point list team*/
+router.get('/listTeam', function (req, res, next) {
+    TeamDB.find(function (err, teams) {
+      if (err) {
+        res.status(500).send(err)
+      } else {
+        res.send(teams);
+      }
+    });
+  });
 
 module.exports = router;

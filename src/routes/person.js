@@ -3,7 +3,7 @@ var router = express.Router();
 var PersonORM = require('../model/personModel.js');
 
 /* End point create person*/
-router.get('/create', function (req, res, next) {
+router.post('/create', function (req, res, next) {
    
     var datoPerson = req.query;
 
