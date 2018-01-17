@@ -3,15 +3,16 @@ var router = express.Router();
 var PersonORM = require('../model/personModel.js');
 
 /* End point create person*/
-router.post('/create', function (req, res, next) {
+router.post('/', function (req, res, next) {
    
-    var datoPerson = req.query;
+    var datoPerson = req.body;
 
     var dataPerson = {
         emailPerson: datoPerson.email,
         namePerson: datoPerson.name,
         birthdatePerson: datoPerson.birthdate,
-        teamId: datoPerson.teamId
+        teamId: datoPerson.teamId,
+        subscribed: "false"
     }
 
     var person = new PersonORM(dataPerson);
@@ -23,6 +24,19 @@ router.post('/create', function (req, res, next) {
         } else {
             console.log("Person created on db");
             res.send(createdTodoObject);
+        }
+    });
+});
+
+/* End point list person*/
+router.get('/', function (req, res, next) {
+    PersonORM.find(function (err, persons) {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err)
+        } else {
+            console.log(persons);
+            res.send(persons);
         }
     });
 });

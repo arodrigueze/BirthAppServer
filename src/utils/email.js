@@ -9,7 +9,7 @@ function Email() {
 
 /*Validate if empty string*/
 Email.prototype.sendEmail = function (receiver,callback) {
-
+    console.log("Sending email...");
     if (validacion.isEmptyString(receiver)) {
         console.log("No email on parameter");
         callback(false);
