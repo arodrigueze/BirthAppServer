@@ -10,7 +10,8 @@ router.get('/create', function (req, res, next) {
     var dataPerson = {
         emailPerson: datoPerson.email,
         namePerson: datoPerson.name,
-        birthdatePerson: datoPerson.birthdate
+        birthdatePerson: datoPerson.birthdate,
+        id_team: datoPerson.teamId
     }
 
     var person = new PersonORM(dataPerson);
