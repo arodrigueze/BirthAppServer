@@ -2,10 +2,11 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var personSchema = new Schema({
-    emailPerson:String,
-    namePerson:String,
-    birthdatePerson:String,
-    id_team: String
+    email:String,
+    name:String,
+    birthdate:String,
+    teamId: String,
+    subscribed: String
 });
 
 var Person = mongoose.model('Person', personSchema);
