@@ -9,8 +9,7 @@ function PersonDao() {
 PersonDao.prototype.getPersonByEmail = function (personEmail) {
 
     const getPersonByEmailPromise = new Promise((resolve, reject) => {
-        personDB.findOne({ 'email': personEmail },
-            'email', function (err, createdTodoObject) {
+        personDB.findOne({ 'email': personEmail }, function (err, createdTodoObject) {
                 if (err) {
                     reject(err);
                 } else {

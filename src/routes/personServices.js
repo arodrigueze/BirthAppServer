@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var PersonORM = require('../model/personModel.js');
-
+var PersonORM = require('../model/personModel');
+var personDao = require("../dao/personDao");
 /* End point create person*/
 router.post('/', function (req, res, next) {
-   
+
     var datoPerson = req.body;
 
     var dataPerson = {
@@ -30,12 +30,22 @@ router.post('/', function (req, res, next) {
 
 /* End point list person*/
 router.get('/', function (req, res, next) {
+
+    console.log("Inicio promise");
+    var pd = new personDao();
+    var promise = pd.getPersonByEmail("q@q.com");
+    promise.then(function (result) {
+        console.log(result);
+    }, function (err) {
+        console.log(err);
+    });
+    
     PersonORM.find(function (err, persons) {
         if (err) {
-            console.log(err);
+            
             res.status(500).send(err)
         } else {
-            console.log(persons);
+            
             res.send(persons);
         }
     });
