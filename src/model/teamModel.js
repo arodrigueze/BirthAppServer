@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var teamSchema = new Schema({
-    nameTeam:String
+    name:String
 });
 
 var Team = mongoose.model('Team', teamSchema);

@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var listMessagesSchema = new Schema({
     printed:String,
     year:String,
-    receiverPersonId:String
+    receiverId:String
 });
 
 var ListMessages = mongoose.model('ListMessages', listMessagesSchema);
