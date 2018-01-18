@@ -5,7 +5,23 @@ var personDB = require('../model/personModel.js');
 function PersonDao() {
 }
 
-/*REturn messages by listMessagesId*/
+/*Return messages by listMessagesId*/
+PersonDao.prototype.getPersonByEmail = function (personEmail) {
+
+    const getPersonByEmailPromise = new Promise((resolve, reject) => {
+        personDB.findOne({ 'email': personEmail },
+            'email', function (err, createdTodoObject) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(createdTodoObject);
+                }
+            });
+    });
+    return getPersonByEmailPromise;
+};
+
+/*Return messages by listMessagesId*/
 PersonDao.prototype.updateStateById = function (personId) {
 
     personDB.findOne(
@@ -16,7 +32,7 @@ PersonDao.prototype.updateStateById = function (personId) {
             person.save(function (err, createdTodoObject) {
                 if (err) {
                     console.log(err);
-                    
+
                 } else {
                     console.log("Person updated");
                     console.log(createdTodoObject);
