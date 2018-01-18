@@ -22,6 +22,9 @@ var bot = new builder.UniversalBot(connector, [
         session.beginDialog('welcomeDialog');
     },
     (session, results) => {
+        session.beginDialog('emailDialog');
+    },
+    (session, results) => {
         session.beginDialog('suscribeDialog');
     },
     (session, results) => {
@@ -37,6 +40,40 @@ var welcomeDialog = bot.dialog('welcomeDialog',
     }
 
 );
+
+var foundEmail = false;
+
+var emailDialog = bot.dialog('emailDialog', [
+
+    (session, args) => {
+
+        if(args && args.reprompt){
+            foundEmail = true;
+            builder.Prompts.text(session, 'I couldn\'t find your Skype email, would you please re-type it?');
+        }
+        else{
+            builder.Prompts.text(session, 'Would you please give me your email?');
+        }
+        
+    },
+    (session, results) => {
+
+        var emailResponse = results.response;
+        console.log(emailResponse);
+        console.log(foundEmail);
+
+        //TODO: implement method
+
+        if(foundEmail){
+            session.endDialog('Thanks!');
+        }
+        else{
+            session.replaceDialog('emailDialog', { reprompt: true });
+        }
+
+    }
+
+]);
 
 var suscribeDialogDIalog = bot.dialog('suscribeDialog', [
 
@@ -72,11 +109,9 @@ var birthdayConfirmationDialog = bot.dialog('birthdayConfirmation', [
         }
         else {
             session.send('Ok, if you change your mind, just type "congratulate".');
+            session.endConversation("Goodbye!");
         }
 
-    },
-    (session, results) => {
-        session.endConversation("Goodbye!");
     }
 
 ]);
@@ -118,7 +153,7 @@ var timeCheck = setInterval ( () => {
     
     // }
 
-}, 1000 * 30);
+}, 1000 * 60);
 
 
 module.exports = router;
