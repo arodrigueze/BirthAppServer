@@ -13,6 +13,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var person = require('./routes/personServices');
 app.use('/person', person);
 
+/*Route for message */
+var message = require('./routes/messageService');
+app.use('/message', message);
+
+/*Route for message */
+var listMessages = require('./routes/listMessagesService');
+app.use('/listMessages', listMessages);
+
 /*Route for send email to users */
 var sendEmail = require('./routes/sendEmail');
 app.use('/sendEmail', sendEmail);

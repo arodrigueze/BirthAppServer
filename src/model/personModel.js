@@ -2,9 +2,9 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var personSchema = new Schema({
-    emailPerson:String,
-    namePerson:String,
-    birthdatePerson:String,
+    email:String,
+    name:String,
+    birthdate:String,
     teamId: String,
     subscribed: String
 });

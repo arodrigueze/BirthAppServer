@@ -8,9 +8,9 @@ router.post('/', function (req, res, next) {
     var datoPerson = req.body;
 
     var dataPerson = {
-        emailPerson: datoPerson.email,
-        namePerson: datoPerson.name,
-        birthdatePerson: datoPerson.birthdate,
+        email: datoPerson.email,
+        name: datoPerson.name,
+        birthdate: datoPerson.birthdate,
         teamId: datoPerson.teamId,
         subscribed: "false"
     }
