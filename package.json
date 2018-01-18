@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
+    "startAWS": "node src/app.js",
     "start": "npm run build:live",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"

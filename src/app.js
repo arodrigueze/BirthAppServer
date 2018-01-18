@@ -1,3 +1,4 @@
+var port = process.env.PORT || 3000;
 var express = require('express');
 var bodyParser = require('body-parser');
 var configurationServer = require('./configServer');
@@ -29,6 +30,6 @@ mongoose.connect(configurationServer.mongodbURL, function (err) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.listen(3000, function () {
-  console.log('server on port 3000!');
+app.listen(port, function () {
+  console.log('server on port %s!', port);
 });
