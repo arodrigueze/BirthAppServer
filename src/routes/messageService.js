@@ -5,8 +5,6 @@ var ListMessagesModelDB = require('../model/listMessagesModel.js');
 var MessageDB = require('../model/messageModel.js');
 var listMessagesDao = require("../dao/listMessagesDao");
 
-
-
 /*This route insert a message, 
 create a list messages if not exist
 using receiverid 
@@ -29,26 +27,15 @@ router.post('/', function (req, res, next) {
     } else if (validaciones.isEmptyString(datoMessage.receiverId)) {
         res.json({ "status": "Error: receiverId is empty" });
     } else {
-        
-        
+          
         ListMessagesModelDB.findOne({ 'receiverId': datoMessage.receiverId }, 'receiverId',function (err, listMessages) {
             if (validaciones.isEmptyObject(listMessages)) {
                 uploadMessageIfListMessageNotExist(datoMessage, res);
             } else {
-                console.log("Imprimiendo lista de mensajes");
-                console.log(listMessages._id);
-                var listmessajesid;
-
-                for (i = 0; i < listMessages.length; i++) {
-                    console.log("found lista mensajes", listmessage[i]);
-                    if (listMessages[i].receiverId.localeCompare(datoMessage.receiverId) == 0) {
-                        listmessajesid = listMessages[i]._id;
-                    }
-                }
                 var dataMessage = {
                     senderId: datoMessage.senderId,
                     message: datoMessage.message,
-                    listMessageId: listmessajesid
+                    listMessageId: listMessages._id
                 }
                 var message = new MessageDB(dataMessage);
                 message.save(function (err, createdTodoObject) {

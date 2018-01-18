@@ -8,6 +8,20 @@ router.get('/', function (req, res, next) {
     var datoListMessage = req.body;
     var validaciones = new validationMessage();
 
+    ListMessagesDB.find(function (err, listMessages) {
+        if (err) {
+            res.status(500).send(err)
+        } else {
+            res.send(listMessages);
+        }
+    });
+
+});
+
+router.get('/byId', function (req, res, next) {
+    var datoListMessage = req.body;
+    var validaciones = new validationMessage();
+
     if (validaciones.isEmptyObject(datoListMessage.receiverId)) {
         res.json({ "status": "Error: receiverId is missing" });
     } else if (validaciones.isEmptyString(datoListMessage.receiverId)) {
