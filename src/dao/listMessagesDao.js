@@ -12,15 +12,15 @@ class ListMessagesDao {
                 year: new Date().getFullYear(),
                 receiverId: receiverIdIn
             }
-            listMessages.save(function (err, createdTodoObject) {
+            listMessages.save(function (err, listMessageCreated) {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(createdTodoObject);
+                    resolve(listMessageCreated);
                 }
             });
         });
-        return createListMessagesPromise;
+        return  createListMessagesPromise;
     };
 }
-module.exports = ListMessagesDao;
+module.exports =  ListMessagesDao;

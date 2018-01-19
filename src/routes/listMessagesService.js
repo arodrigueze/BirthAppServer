@@ -39,4 +39,17 @@ router.get('/', function (req, res, next) {
     });
 });
 
+router.put('/', function (req, res, next) {
+    var datoListMessage = req.body;
+    ListMessagesDB.findOne({ '_id': datoListMessage._id }, function (err, listMessages) {
+        listMessages.printed = datoListMessage.printed;
+        listMessages.save(function (err, listMessagesUpdated) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(listMessagesUpdated);
+            }
+        });
+    }); 
+});
 module.exports = router;

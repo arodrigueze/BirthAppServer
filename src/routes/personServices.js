@@ -3,6 +3,7 @@ var router = express.Router();
 var PersonORM = require('../model/personModel');
 var personDao = require("../dao/personDao");
 var teamDao = require("../dao/teamDao");
+var messageDao = require("../dao/messageDao");
 var validationPerson = require('../utils/validations');
 
 /* End point create person*/
@@ -66,7 +67,18 @@ router.post('/', function (req, res, next) {
 /* End point list person*/
 router.get('/', function (req, res, next) {
 
-    console.log(new Date());
+    var dataMessage = {
+        senderId: "5a6224bb250a6f155ca7004c",
+        message: "Feliz cumpleaños parce"
+    }
+    receiverId = "sdfsdf";
+    var mda = new messageDao();
+    var promda = mda.createMessage(dataMessage,receiverId);
+    promda.then((resolve,reject)=>function(resolve){
+        console.log(resolve);
+    },function(reject){
+        console.log(reject);
+    });
 
     PersonORM.find(function (err, persons) {
         if (err) {
