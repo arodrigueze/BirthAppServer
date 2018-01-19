@@ -26,8 +26,7 @@ router.post('/', function (req, res, next) {
         res.json({ "status": "Error: receiverId is missing" });
     } else if (validaciones.isEmptyString(datoMessage.receiverId)) {
         res.json({ "status": "Error: receiverId is empty" });
-    } else {
-          
+    } else {        
         ListMessagesModelDB.findOne({ 'receiverId': datoMessage.receiverId }, 'receiverId',function (err, listMessages) {
             if (validaciones.isEmptyObject(listMessages)) {
                 uploadMessageIfListMessageNotExist(datoMessage, res);
@@ -38,13 +37,11 @@ router.post('/', function (req, res, next) {
                     listMessageId: listMessages._id
                 }
                 var message = new MessageDB(dataMessage);
-                message.save(function (err, createdTodoObject) {
+                message.save(function (err, mensajeSaved) {
                     if (err) {
-                        console.log(err);
                         res.send(err);
                     } else {
-                        console.log("Message created.");
-                        res.send(createdTodoObject);
+                        res.send(mensajeSaved);
                     }
                 });
             }

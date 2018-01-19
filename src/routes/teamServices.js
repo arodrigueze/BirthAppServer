@@ -1,28 +1,30 @@
 var express = require('express');
 var router = express.Router();
-var TeamDB = require('../model/teamModel.js');
+var TeamDB = require('../model/teamModel');
 var validationTeam = require('../utils/validations');
 
-/* End point create team*/
+/* End point create team
+param req.body.name
+name of the team*/
 router.post('/', function (req, res, next) {
 
     var datoTeam = req.body;
-
     var validaciones = new validationTeam();
 
-
-    if (validaciones.isEmptyString(datoTeam.name)) {
-        res.json({ "status": "El equipo esta vacio." });
+    if (validaciones.isEmptyObject(datoTeam.name)) {
+        res.json({ "status": "Incorrect parameter" });
+    } else if (validaciones.isEmptyString(datoTeam.name)) {
+        res.json({ "status": "Team is empty" });
     }
     else {
         var normalizedTeam = validaciones.normalizeTeamName(datoTeam.name);
         TeamDB.findOne({ 'name': normalizedTeam }, 'name', function (err, team) {
             if (err) {
-                res.json({ "status": "Error: al acceder a la base de datos, intenta nuevamente." });
+                res.json({ "status": "Error: Data base error." });
             }
             else {
                 if (!validaciones.isEmptyObject(team)) {
-                    res.json({ "status": "Error: El equipo ya se encuentra registrado." });
+                    res.json({ "status": "Error: Team is already on db" });
                 }
                 else {
                     var dataTeam = {
@@ -31,10 +33,8 @@ router.post('/', function (req, res, next) {
                     var team = new TeamDB(dataTeam);
                     team.save(function (err, createdTodoObject) {
                         if (err) {
-                            console.log(err);
                             res.send(err);
                         } else {
-                            console.log("Team created ok");
                             res.send(createdTodoObject);
                         }
                     });
@@ -48,7 +48,7 @@ router.post('/', function (req, res, next) {
 router.get('/', function (req, res, next) {
     TeamDB.find(function (err, teams) {
         if (err) {
-            res.status(500).send(err)
+            res.send(err)
         } else {
             res.send(teams);
         }

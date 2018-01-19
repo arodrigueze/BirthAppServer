@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var listMessagesSchema = new Schema({
     printed:String,
-    year:String,
+    year:Number,
     receiverId:String
 });
 

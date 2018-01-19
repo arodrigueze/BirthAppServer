@@ -1,32 +1,26 @@
-var nodemailer = require('nodemailer');
-var configurationServer = require('../configServer');
-var validation = require('../utils/validations');
-var ListMessageDB = require('../model/listMessagesModel.js');
+var ListMessageDB = require('../model/listMessagesModel');
 
-/*Validation constructor */
-function ListMessagesDao() {
+class ListMessagesDao {
+    constructor() { }
+
+    /*Create listmessages using receiverId*/
+    createListMessages(receiverIdIn) {
+        const createListMessagesPromise = new Promise((resolve, reject) => {
+            var listMessages = new ListMessageDB(dataListMessages);
+            var dataListMessages = {
+                printed: "false",
+                year: new Date().getFullYear(),
+                receiverId: receiverIdIn
+            }
+            listMessages.save(function (err, createdTodoObject) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(createdTodoObject);
+                }
+            });
+        });
+        return createListMessagesPromise;
+    };
 }
-
-/*REturn messages by listMessagesId*/
-ListMessagesDao.prototype.createListMessages = function (receiverIdIn, callback) {
-   
-    var dataListMessages = {
-        printed: "false",
-        year: new Date().getFullYear(),
-        receiverId: receiverIdIn
-    }
-
-    var listMessages = new ListMessageDB(dataListMessages);
-
-    listMessages.save(function (err, createdTodoObject) {
-        if (err) {
-            console.log(err);
-            callback(err);
-        } else {
-            console.log("Person created on db");
-            callback(createdTodoObject);
-        }
-    });
-};
-
 module.exports = ListMessagesDao;

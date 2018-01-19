@@ -21,10 +21,6 @@ app.use('/message', message);
 var listMessages = require('./routes/listMessagesService');
 app.use('/listMessages', listMessages);
 
-/*Route for send email to users */
-var sendEmail = require('./routes/sendEmail');
-app.use('/sendEmail', sendEmail);
-
 /*Route for team */
 var team = require('./routes/teamServices');
 app.use('/team', team);

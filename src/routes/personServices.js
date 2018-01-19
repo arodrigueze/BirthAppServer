@@ -2,50 +2,76 @@ var express = require('express');
 var router = express.Router();
 var PersonORM = require('../model/personModel');
 var personDao = require("../dao/personDao");
+var teamDao = require("../dao/teamDao");
+var validationPerson = require('../utils/validations');
+
 /* End point create person*/
 router.post('/', function (req, res, next) {
 
+    var validaciones = new validationPerson();
     var datoPerson = req.body;
 
-    var dataPerson = {
-        email: datoPerson.email,
-        name: datoPerson.name,
-        birthdate: datoPerson.birthdate,
-        teamId: datoPerson.teamId,
-        subscribed: "false"
-    }
-
-    var person = new PersonORM(dataPerson);
-
-    person.save(function (err, createdTodoObject) {
-        if (err) {
-            console.log(err);
+    if (validaciones.isEmptyObject(datoPerson.email)) {
+        res.json({ "status": "Email parameter not exist" });
+    } else if (validaciones.isEmptyObject(datoPerson.name)) {
+        res.json({ "status": "Name parameter not exist" });
+    } else if (validaciones.isEmptyObject(datoPerson.birthdate)) {
+        res.json({ "status": "Birthdate parameter not exist" });
+    } else if (validaciones.isEmptyObject(datoPerson.teamId)) {
+        res.json({ "status": "TeamId parameter not exist" });
+    } else if (validaciones.isEmptyObject(datoPerson.skypeId)) {
+        res.json({ "status": "SkypeId parameter not exist" });
+    } else if (validaciones.isEmptyString(datoPerson.email)) {
+        res.json({ "status": "Email parameter is empty" });
+    } else if (validaciones.isEmptyString(datoPerson.name)) {
+        res.json({ "status": "Name parameter is empty" });
+    } else if (validaciones.isEmptyString(datoPerson.birthdate)) {
+        res.json({ "status": "Birthdate parameter is empty" });
+    } else if (validaciones.isEmptyString(datoPerson.teamId)) {
+        res.json({ "status": "TeamId parameter is empty" });
+    } else if (validaciones.isEmptyString(datoPerson.skypeId)) {
+        res.json({ "status": "SkypeId parameter is empty" });
+    } else {
+        var teamdao = new teamDao().getTeamById(datoPerson.teamId).then(function (result) {
+            if (validaciones.isEmptyObject(result)) {
+                res.json({ "status": "Error: Team Id not exist." });
+            } else {
+                console.log("Team found-------------", result);
+                var dataPerson = {
+                    email: datoPerson.email,
+                    name: datoPerson.name,
+                    birthdate: datoPerson.birthdate,
+                    teamId: datoPerson.teamId,
+                    skypeId: datoPerson.skypeId,
+                    subscribed: "false"
+                }
+                var person = new PersonORM(dataPerson);
+                person.save(function (err, createdTodoObject) {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        console.log("Person created on db");
+                        res.send(createdTodoObject);
+                    }
+                });
+            }
+        }, function (err) {
+            console.log("Errores team");
             res.send(err);
-        } else {
-            console.log("Person created on db");
-            res.send(createdTodoObject);
-        }
-    });
+        });
+    }
 });
 
 /* End point list person*/
 router.get('/', function (req, res, next) {
 
-    console.log("Inicio promise");
-    var pd = new personDao();
-    var promise = pd.getPersonByEmail("q@q.com");
-    promise.then(function (result) {
-        console.log(result);
-    }, function (err) {
-        console.log(err);
-    });
-    
+    console.log(new Date());
+
     PersonORM.find(function (err, persons) {
         if (err) {
-            
-            res.status(500).send(err)
+            res.send(err)
         } else {
-            
             res.send(persons);
         }
     });
