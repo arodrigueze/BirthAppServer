@@ -6,12 +6,12 @@ class ListMessagesDao {
     /*Create listmessages using receiverId*/
     createListMessages(receiverIdIn) {
         const createListMessagesPromise = new Promise((resolve, reject) => {
-            var listMessages = new ListMessageDB(dataListMessages);
             var dataListMessages = {
                 printed: "false",
                 year: new Date().getFullYear(),
                 receiverId: receiverIdIn
             }
+            var listMessages = new ListMessageDB(dataListMessages);
             listMessages.save(function (err, listMessageCreated) {
                 if (err) {
                     reject(err);

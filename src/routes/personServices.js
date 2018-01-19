@@ -20,8 +20,6 @@ router.post('/', function (req, res, next) {
         res.json({ "status": "Birthdate parameter not exist" });
     } else if (validaciones.isEmptyObject(datoPerson.teamId)) {
         res.json({ "status": "TeamId parameter not exist" });
-    } else if (validaciones.isEmptyObject(datoPerson.skypeId)) {
-        res.json({ "status": "SkypeId parameter not exist" });
     } else if (validaciones.isEmptyString(datoPerson.email)) {
         res.json({ "status": "Email parameter is empty" });
     } else if (validaciones.isEmptyString(datoPerson.name)) {
@@ -30,9 +28,7 @@ router.post('/', function (req, res, next) {
         res.json({ "status": "Birthdate parameter is empty" });
     } else if (validaciones.isEmptyString(datoPerson.teamId)) {
         res.json({ "status": "TeamId parameter is empty" });
-    } else if (validaciones.isEmptyString(datoPerson.skypeId)) {
-        res.json({ "status": "SkypeId parameter is empty" });
-    } else {
+    } else  {
         var teamdao = new teamDao().getTeamById(datoPerson.teamId).then(function (result) {
             if (validaciones.isEmptyObject(result)) {
                 res.json({ "status": "Error: Team Id not exist." });
@@ -43,7 +39,7 @@ router.post('/', function (req, res, next) {
                     name: datoPerson.name,
                     birthdate: datoPerson.birthdate,
                     teamId: datoPerson.teamId,
-                    skypeId: datoPerson.skypeId,
+                    skypeId: "",
                     subscribed: "false"
                 }
                 var person = new PersonORM(dataPerson);
@@ -66,20 +62,6 @@ router.post('/', function (req, res, next) {
 
 /* End point list person*/
 router.get('/', function (req, res, next) {
-
-    var dataMessage = {
-        senderId: "5a6224bb250a6f155ca7004c",
-        message: "Feliz cumpleaños parce"
-    }
-    receiverId = "sdfsdf";
-    var mda = new messageDao();
-    var promda = mda.createMessage(dataMessage,receiverId);
-    promda.then((resolve,reject)=>function(resolve){
-        console.log(resolve);
-    },function(reject){
-        console.log(reject);
-    });
-
     PersonORM.find(function (err, persons) {
         if (err) {
             res.send(err)

@@ -39,11 +39,9 @@ class MessageDao {
             } else if (receiverId.localeCompare(datoMessage.senderId) == 0) {
                 reject({ "status": "Error: Can't send message to self" });
             } else {
-                ListMessagesModelDB.findOne({ 'receiverId': receiverId }, 'receiverId', function (err, listMessages) {
-                    console.log("------------"+listMessages);
+                ListMessagesModelDB.findOne({ 'receiverId': receiverId }, 'receiverId', function (err, listMessages) {  
                     if (validaciones.isEmptyObject(listMessages)) {
                         var listmessagedao = new listMessageDao().createListMessages(receiverId).then(function(result){
-                            
                             var dataMessage = {
                                 senderId: datoMessage.senderId, 
                                 message: datoMessage.message,
