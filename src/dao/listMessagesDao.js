@@ -8,7 +8,7 @@ function ListMessagesDao() {
 }
 
 /*REturn messages by listMessagesId*/
-ListMessagesDao.prototype.createListMessages = function (receiverIdIn, callback) {
+ListMessagesDao.prototype.createListMessages = function (receiverIdIn) {
    
     var dataListMessages = {
         printed: "false",
@@ -17,16 +17,21 @@ ListMessagesDao.prototype.createListMessages = function (receiverIdIn, callback)
     }
 
     var listMessages = new ListMessageDB(dataListMessages);
-
-    listMessages.save(function (err, createdTodoObject) {
+    // pending, fulfilled, rejected
+    const savePromise = new Promise((resolve, reject) => {
+      istMessages.save(function (err, createdTodoObject) {
         if (err) {
             console.log(err);
-            callback(err);
+            reject(err);
         } else {
             console.log("Person created on db");
-            callback(createdTodoObject);
+            resolve(createdTodoObject);
         }
+      });
+    
     });
+
+    return savePromise;
 };
 
 module.exports = ListMessagesDao;
