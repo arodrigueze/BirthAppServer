@@ -1,5 +1,6 @@
 const ListMessageDB = require('../model/listMessagesModel');
 
+
 class ListMessagesDao {
   /* Create listmessages using receiverId */
   createListMessages(receiverIdIn) {
@@ -21,4 +22,6 @@ class ListMessagesDao {
     return this.createListMessagesPromise;
   }
 }
+
+
 module.exports = ListMessagesDao;
