@@ -1,84 +1,84 @@
-var MessageDB = require('../model/messageModel');
-var validationMessage = require('../utils/validations');
-var ListMessagesModelDB = require('../model/listMessagesModel');
-var listMessageDao = require('../dao/listMessagesDao');
+const MessageDB = require('../model/messageModel');
+const ValidationMessage = require('../utils/validations');
+const ListMessagesModelDB = require('../model/listMessagesModel');
+const ListMessageDao = require('../dao/listMessagesDao');
+
 class MessageDao {
+  constructor() {
+    this.validaciones = new ValidationMessage();
+  }
 
-    constructor() {
-        var validacion = new validationMessage();
-    }
+  getMessagesByListMessageId(listMessageId) {
+    this.getMessagesByListMessagesIdPromise = new Promise((resolve, reject) => {
+      MessageDB.find({ _id: listMessageId }, (err, messages) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(messages);
+        }
+      });
+    });
+    return this.getMessagesByListMessagesIdPromise;
+  }
 
-    getMessagesByListMessageId(listMessageId) {
-        const getMessagesByListMessagesIdPromise = new Promise((resolve, reject) => {
-            MessageDB.find({ '_id': listMessageId }, function (err, messages) {
-                if (err) {
-                    reject(err);
+  createMessage(datoMessage, receiverId) {
+    this.createMessagePromise = new Promise((resolve, reject) => {
+      if (this.validaciones.isEmptyObject(datoMessage.senderId)) {
+        reject(new Error('Error: senderId is missing'));
+      } else if (this.validaciones.isEmptyString(datoMessage.senderId)) {
+        reject(new Error('Error: senderId is empty'));
+      } else if (this.validaciones.isEmptyObject(datoMessage.message)) {
+        reject(new Error('Error: message is missing'));
+      } else if (this.validaciones.isEmptyString(datoMessage.message)) {
+        reject(new Error('Error: message is empty'));
+      } else if (this.validaciones.isEmptyObject(receiverId)) {
+        reject(new Error('Error: receiverId is missing'));
+      } else if (this.validaciones.isEmptyString(receiverId)) {
+        reject(new Error('Error: receiverId is empty'));
+      } else if (receiverId.localeCompare(datoMessage.senderId) === 0) {
+        reject(new Error("Error: Can't send message to self"));
+      } else {
+        ListMessagesModelDB.findOne({ _id: receiverId }, 'receiverId', (err, listMessages) => {
+          if (this.validaciones.isEmptyObject(listMessages)) {
+            const listMessageDao = new ListMessageDao();
+            listMessageDao.createListMessages(receiverId).then((result) => {
+              const dataMessage = {
+                senderId: datoMessage.senderId,
+                message: datoMessage.message,
+                listMessageId: result._id,
+              };
+              const message = new MessageDB(dataMessage);
+              message.save((errSave, createdTodoObject) => {
+                if (errSave) {
+                  console.log(errSave);
+                  reject(errSave);
                 } else {
-                    resolve(messages);
+                  console.log('Message created.');
+                  resolve(createdTodoObject);
                 }
+              });
+            }, (errorPromise) => {
+              reject(errorPromise);
             });
+          } else {
+            const dataMessage = {
+              senderId: datoMessage.senderId,
+              message: datoMessage.message,
+              listMessageId: listMessages._id,
+            };
+            const message = new MessageDB(dataMessage);
+            message.save((errSave, mensajeSaved) => {
+              if (errSave) {
+                reject(errSave);
+              } else {
+                resolve(mensajeSaved);
+              }
+            });
+          }
         });
-        return getMessagesByListMessagesIdPromise;
-    };
-
-    createMessage(datoMessage,receiverId) { 
-        var validaciones = new validationMessage();
-        const createMessagePromise = new Promise((resolve, reject) => {
-            if (validaciones.isEmptyObject(datoMessage.senderId)) {
-                reject({ "status": "Error: senderId is missing" });
-            } else if (validaciones.isEmptyString(datoMessage.senderId)) {
-                reject({ "status": "Error: senderId is empty" });
-            } else if (validaciones.isEmptyObject(datoMessage.message)) {
-                reject({ "status": "Error: message is missing" });
-            } else if (validaciones.isEmptyString(datoMessage.message)) {
-                reject({ "status": "Error: message is empty" });
-            } else if (validaciones.isEmptyObject(receiverId)) {
-                reject({ "status": "Error: receiverId is missing" });
-            } else if (validaciones.isEmptyString(receiverId)) {
-                reject({ "status": "Error: receiverId is empty" });
-            } else if (receiverId.localeCompare(datoMessage.senderId) == 0) {
-                reject({ "status": "Error: Can't send message to self" });
-            } else {
-                ListMessagesModelDB.findOne({ 'receiverId': receiverId }, 'receiverId', function (err, listMessages) {  
-                    if (validaciones.isEmptyObject(listMessages)) {
-                        var listmessagedao = new listMessageDao().createListMessages(receiverId).then(function(result){
-                            var dataMessage = {
-                                senderId: datoMessage.senderId, 
-                                message: datoMessage.message,
-                                listMessageId: result._id
-                            }
-                            var message = new MessageDB(dataMessage);
-                            message.save(function (err, createdTodoObject) {
-                                if (err) {
-                                    console.log(err);
-                                    reject(err);
-                                } else {
-                                    console.log("Message created.");
-                                    resolve(createdTodoObject);
-                                }
-                            });
-                        },function(err){
-                            reject(err);
-                        });
-                    } else {
-                        var dataMessage = {
-                            senderId: datoMessage.senderId,
-                            message: datoMessage.message,
-                            listMessageId: listMessages._id
-                        }
-                        var message = new MessageDB(dataMessage);
-                        message.save(function (err, mensajeSaved) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(mensajeSaved);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-        return createMessagePromise;
-    };
+      }
+    });
+    return this.createMessagePromise;
+  }
 }
 module.exports = MessageDao;

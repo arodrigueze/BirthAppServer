@@ -1,12 +1,13 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-var listMessagesSchema = new Schema({
-    printed:String,
-    year:Number,
-    receiverId:String
+const Schema = mongoose.Schema;
+
+const listMessagesSchema = new Schema({
+  printed: String,
+  year: Number,
+  receiverId: String,
 });
 
-var ListMessages = mongoose.model('ListMessages', listMessagesSchema);
+const ListMessages = mongoose.model('ListMessages', listMessagesSchema);
 
 module.exports = ListMessages;

@@ -1,26 +1,24 @@
-var ListMessageDB = require('../model/listMessagesModel');
+const ListMessageDB = require('../model/listMessagesModel');
 
 class ListMessagesDao {
-    constructor() { }
-
-    /*Create listmessages using receiverId*/
-    createListMessages(receiverIdIn) {
-        const createListMessagesPromise = new Promise((resolve, reject) => {
-            var dataListMessages = {
-                printed: "false",
-                year: new Date().getFullYear(),
-                receiverId: receiverIdIn
-            }
-            var listMessages = new ListMessageDB(dataListMessages);
-            listMessages.save(function (err, listMessageCreated) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(listMessageCreated);
-                }
-            });
-        });
-        return  createListMessagesPromise;
-    };
+  /* Create listmessages using receiverId */
+  createListMessages(receiverIdIn) {
+    this.createListMessagesPromise = new Promise((resolve, reject) => {
+      const dataListMessages = {
+        printed: 'false',
+        year: new Date().getFullYear(),
+        receiverId: receiverIdIn,
+      };
+      const listMessages = new ListMessageDB(dataListMessages);
+      listMessages.save((err, listMessageCreated) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(listMessageCreated);
+        }
+      });
+    });
+    return this.createListMessagesPromise;
+  }
 }
-module.exports =  ListMessagesDao;
+module.exports = ListMessagesDao;

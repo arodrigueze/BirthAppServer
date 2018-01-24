@@ -1,58 +1,53 @@
-var express = require('express');
-var router = express.Router();
-var TeamDB = require('../model/teamModel');
-var validationTeam = require('../utils/validations');
+const express = require('express');
+
+const router = express.Router();
+const TeamDB = require('../model/teamModel');
+const ValidationTeam = require('../utils/validations');
 
 /* End point create team
 param req.body.name
-name of the team*/
-router.post('/', function (req, res, next) {
+name of the team */
+router.post('/', (req, res) => {
+  const datoTeam = req.body;
+  const validaciones = new ValidationTeam();
 
-    var datoTeam = req.body;
-    var validaciones = new validationTeam();
-
-    if (validaciones.isEmptyObject(datoTeam.name)) {
-        res.json({ "status": "Incorrect parameter" });
-    } else if (validaciones.isEmptyString(datoTeam.name)) {
-        res.json({ "status": "Team is empty" });
-    }
-    else {
-        var normalizedTeam = validaciones.normalizeTeamName(datoTeam.name);
-        TeamDB.findOne({ 'name': normalizedTeam }, 'name', function (err, team) {
-            if (err) {
-                res.json({ "status": "Error: Data base error." });
-            }
-            else {
-                if (!validaciones.isEmptyObject(team)) {
-                    res.json({ "status": "Error: Team is already on db" });
-                }
-                else {
-                    var dataTeam = {
-                        name: normalizedTeam
-                    }
-                    var team = new TeamDB(dataTeam);
-                    team.save(function (err, createdTodoObject) {
-                        if (err) {
-                            res.send(err);
-                        } else {
-                            res.send(createdTodoObject);
-                        }
-                    });
-                }
-            }
+  if (validaciones.isEmptyObject(datoTeam.name)) {
+    res.status(500).json({ status: 'The parameter is not inside the body request' });
+  } else if (validaciones.isEmptyString(datoTeam.name)) {
+    res.status(500).json({ status: 'Team is empty' });
+  } else {
+    const normalizedTeam = validaciones.normalizeTeamName(datoTeam.name);
+    TeamDB.findOne({ name: normalizedTeam }, 'name', (errorFindTeam, team) => {
+      if (errorFindTeam) {
+        res.status(500).send(errorFindTeam);
+      } else if (!validaciones.isEmptyObject(team)) {
+        res.status(500).json({ status: 'Error: Team is already on db' });
+      } else {
+        const dataTeam = {
+          name: normalizedTeam,
+        };
+        const teamSave = new TeamDB(dataTeam);
+        teamSave.save((err, savedTeam) => {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.send(savedTeam);
+          }
         });
-    }
+      }
+    });
+  }
 });
 
-/* End point list team*/
-router.get('/', function (req, res, next) {
-    TeamDB.find(function (err, teams) {
-        if (err) {
-            res.send(err)
-        } else {
-            res.send(teams);
-        }
-    });
+/* End point list team */
+router.get('/', (req, res) => {
+  TeamDB.find({}, (errorFind, teams) => {
+    if (errorFind) {
+      res.status(500).send(errorFind);
+    } else {
+      res.send(teams);
+    }
+  });
 });
 
 module.exports = router;

@@ -1,50 +1,42 @@
-var personDB = require('../model/personModel');
+const personDB = require('../model/personModel');
 
 class PersonDao {
-    constructor() { }
-    
-    getPersonByEmail(personEmail) {
-        const getPersonByEmailPromise = new Promise((resolve, reject) => {
-            personDB.findOne({ 'email': personEmail }, function (err, personFound) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(personFound);
-                }
-            });
-        });
-        return getPersonByEmailPromise;
-    };
+  getPersonByEmail(personEmail) {
+    this.getPersonByEmailPromise = new Promise((resolve, reject) => {
+      personDB.findOne({ email: personEmail }, (err, personFound) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(personFound);
+        }
+      });
+    });
+    return this.getPersonByEmailPromise;
+  }
 
-    getPersonById(personId) {
-        const getPersonByEmailPromise = new Promise((resolve, reject) => {
-            personDB.findOne({ '_id': personId }, function (err, personFound) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(personFound);
-                }
-            });
-        });
-        return getPersonByEmailPromise;
-    };
+  getPersonById(personId) {
+    this.getPersonByEmailPromise = new Promise((resolve, reject) => {
+      personDB.findOne({ _id: personId }, (err, personFound) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(personFound);
+        }
+      });
+    });
+    return this.getPersonByEmailPromise;
+  }
 
-    
-    updateStateById(personId) {
-        const updateStateByIdPromise = new Promise((resolve, reject) => {
-            personDB.findOne({ '_id': personId }, function (err, person) {
-                person.subscribed = "true";
-                person.save(function (err, personSaved) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(personSaved);
-                    }
-                });
-            });
-        });
-        return updateStateByIdPromise;
-    };
+
+  updateStateById(personId) {
+    this.updateStateByIdPromise = new Promise((resolve, reject) => {
+      personDB.findByIdAndUpdate(personId, { $set: { subscribed: true } }, (err, person) => {
+        if (err) reject(err);
+        resolve(person);
+      });
+    });
+    return this.updateStateByIdPromise;
+  }
 }
 
 module.exports = PersonDao;

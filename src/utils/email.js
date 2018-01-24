@@ -1,38 +1,37 @@
-var nodemailer = require('nodemailer');
-var configurationServer = require('../configServer');
+const nodemailer = require('nodemailer');
+const configurationServer = require('../configServer');
 
 class Email {
-    constructor() {}
-    /*Email class
+  /* Email class
     this class send emails
     @param receiver
-    person's email*/
-    sendEmail(receiver) {
-        const sendEmailPromise = new Promise((resolve, reject) => {
-            var transporter = nodemailer.createTransport({
-                service: configurationServer.emailProvider,
-                auth: {
-                    user: configurationServer.emailUser,
-                    pass: configurationServer.emailPass
-                }
-            });
+    person's email */
+  sendEmail(receiver) {
+    this.sendEmailPromise = new Promise((resolve, reject) => {
+      const transporter = nodemailer.createTransport({
+        service: configurationServer.emailProvider,
+        auth: {
+          user: configurationServer.emailUser,
+          pass: configurationServer.emailPass,
+        },
+      });
 
-            var mailOptions = {
-                from: configurationServer.emailUser,
-                to: receiver,
-                subject: configurationServer.subject,
-                text: configurationServer.emailMessage
-            };
+      const mailOptions = {
+        from: configurationServer.emailUser,
+        to: receiver,
+        subject: configurationServer.subject,
+        text: configurationServer.emailMessage,
+      };
 
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(info);
-                }
-            });
-        });
-        return sendEmailPromise;
-    };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(info);
+        }
+      });
+    });
+    return this.sendEmailPromise;
+  }
 }
 module.exports = Email;
