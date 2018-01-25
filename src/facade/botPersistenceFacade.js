@@ -7,23 +7,20 @@ class BotPersistenceFacade {
     constructor(){
         this.messagesDao = new messagesDao(); 
         this.personDao = new personDao(); 
+        this.personUtils = new personUtils();
     }
   
     getPersonByEmail(personEmail) {
 
         const getPersonByEmailPromise = this.personDao.getPersonByEmail(personEmail);
 
-        let personResult = personUtils.newEmptyPerson();
+        let personResult = this.personUtils.newEmptyPerson();
 
         getPersonByEmailPromise.then(
 
             (result) => {
                 
-                personResult.email = result.email;
-                personResult.name = result.name;
-                personResult.birthdate = result.birthdate;
-                personResult.teamId = result.teamId;
-                personResult.suscribed = result.suscribed;
+                this.personUtils.hydratePerson(personResult, result);
 
             },
             (err) => {
@@ -49,11 +46,7 @@ class BotPersistenceFacade {
 
             (result) => {
 
-                personResult.email = result.email;
-                personResult.name = result.name;
-                personResult.birthdate = result.birthdate;
-                personResult.teamId = result.teamId;
-                personResult.suscribed = result.suscribed; 
+                this.personUtils.hydratePerson(personResult, result);
 
             },
             (err) => {
@@ -98,5 +91,32 @@ class BotPersistenceFacade {
         return sentMessage;
 
     }
+
+    registerUserAddress(personId, personAdress) {
+
+        const registerAddressPromise = messagesDao.updateAddressBotById(personId, personAdress);
+
+        let personResult = personUtils.newEmptyPerson();
+
+        registerAddressPromise.then(
+
+            (result) => {
+
+                this.personUtils.hydratePerson(personResult, result);
+
+            },
+            (err) => {
+
+                personResult = undefined;
+
+            }
+
+        );
+
+        return personResult;
+
+    }
     
 }
+
+module.exports = BotPersistenceFacade;

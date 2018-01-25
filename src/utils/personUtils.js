@@ -3,13 +3,30 @@ const personPrototype = {
     name: undefined,
     birthdate: undefined,
     teamId: undefined,
-    suscribed: undefined
+    suscribed: undefined,
+    addressBot: undefined
 }
 
-newEmptyPerson = () => {
+class PersonUtils {
+
+    newEmptyPerson() {
+        
+        return Object.assign({}, personPrototype);
     
-    return Object.assign({}, personPrototype);
+    }
+
+    hydratePerson(person, personDatabaseResult) {
+
+        person.email = personDatabaseResult.email;
+        person.name = personDatabaseResult.name;
+        person.birthdate = personDatabaseResult.birthdate;
+        person.teamId = personDatabaseResult.teamId;
+        person.suscribed = personDatabaseResult.suscribed;
+        person.address = personDatabaseResult.address;
+
+    }
 
 }
 
-module.exports = newEmptyPerson;
+
+module.exports = PersonUtils;

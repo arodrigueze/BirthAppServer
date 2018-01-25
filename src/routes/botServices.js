@@ -1,8 +1,10 @@
-
-
 var express = require('express');
 var router = express.Router();
 var builder = require('botbuilder');
+var botPersistenceFacade = require('../facade/botPersistenceFacade')
+
+//Instantiate bot persistence facade for communication with database
+const botPersistence = new botPersistenceFacade();
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -13,23 +15,42 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users 
 router.post('/messages', connector.listen());
 
-var addressUser;
+//Instantiate in memory storage for the bot
+var inMemoryStorage = new builder.MemoryBotStorage();
 
-var bot = new builder.UniversalBot(connector, [
+//Initialize bot with it's in memory storage
+var bot = new builder.UniversalBot(connector).set('storage', inMemoryStorage);
+
+//start default dialog
+var defaultDialog = bot.dialog('/', [
 
     (session) => {
-        addressUser = session.message.address;
+        session.userData.userAddress = session.message.address;
         session.beginDialog('welcomeDialog');
     },
     (session, results) => {
-        session.beginDialog('emailDialog');
+
+        const personEmail = session.userData.personEmail;
+
+        if(!personEmail){
+            
+            session.beginDialog('emailDialog');
+
+        }
+
     },
     (session, results) => {
-        session.beginDialog('suscribeDialog');
+     
+        const person = session.userData.person;
+
+        if(!person.suscribed){
+            session.beginDialog('suscribeDialog');
+        }
+
     },
-    (session, results) => {
-        session.endConversation("Goodbye!");
-    }
+    // (session, results) => {
+    //     session.endConversation("Goodbye!");
+    // }
 
 ]);
 
@@ -41,14 +62,11 @@ var welcomeDialog = bot.dialog('welcomeDialog',
 
 );
 
-var foundEmail = false;
-
 var emailDialog = bot.dialog('emailDialog', [
 
     (session, args) => {
 
         if(args && args.reprompt){
-            foundEmail = true;
             builder.Prompts.text(session, 'I couldn\'t find your Skype email, would you please re-type it?');
         }
         else{
@@ -59,15 +77,16 @@ var emailDialog = bot.dialog('emailDialog', [
     (session, results) => {
 
         var emailResponse = results.response;
-        console.log(emailResponse);
-        console.log(foundEmail);
 
-        //TODO: implement method
+        const personResponse = botPersistence.getPersonByEmail(emailResponse);
 
-        if(foundEmail){
+        if(personResponse){
+            session.userData.person = personResponse;
+            botPersistence.registerUserAddress(session.userData.person.id, session.userData.address);
             session.endDialog('Thanks!');
         }
         else{
+            session.userData.person = undefined;
             session.replaceDialog('emailDialog', { reprompt: true });
         }
 
@@ -85,7 +104,10 @@ var suscribeDialogDIalog = bot.dialog('suscribeDialog', [
         var suscribeDialogResponse = results.response.entity;
 
         if(suscribeDialogResponse === 'Sure!'){
+
+            botPersistence.suscribePerson(session.userData.person.id);
             session.endDialog('Great, I\'ll make sure to notify you.');
+
         }
         else{
             session.endDialog('Alright, if you want to subscribe at any time just say "subscribe".');
@@ -139,14 +161,14 @@ var timeCheck = setInterval ( () => {
 
     // if(hour === 13 && minute === 50) {
 
-
         console.log('entered if');
 
         if(!addressUser){
             console.log(addressUser);
         }
         else{
-            
+
+            //TODO: Change to for loop of all user adresses in database            
             bot.beginDialog(addressUser, 'birthdayConfirmation');
 
         }                
