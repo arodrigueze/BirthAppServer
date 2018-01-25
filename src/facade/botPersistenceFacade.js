@@ -1,63 +1,97 @@
-const messagesDao = require("../dao/messagesDao");
+const messageDao = require("../dao/messageDao");
 const personDao = require("../dao/personDao");
 const personUtils = require("../utils/personUtils")
 
 class BotPersistenceFacade {
     
     constructor(){
-        this.messagesDao = new messagesDao(); 
+        this.messageDao = new messageDao(); 
         this.personDao = new personDao(); 
         this.personUtils = new personUtils();
     }
   
     getPersonByEmail(personEmail) {
 
-        const getPersonByEmailPromise = this.personDao.getPersonByEmail(personEmail);
+        let getPersonByEmailPromise = new Promise((resolve, reject) =>{
+            
+            let personResult = this.personUtils.newEmptyPerson();
+            
+            let getPersonByEmailDaoPromise = this.personDao.getPersonByEmail(personEmail);
+    
+            getPersonByEmailDaoPromise.then(
+    
+                (result) => {
 
-        let personResult = this.personUtils.newEmptyPerson();
+                    if(result){
+                        
+                        this.personUtils.hydratePerson(personResult, result);
 
-        getPersonByEmailPromise.then(
+                        resolve(personResult);
+                    
+                    }
+                    else{
+    
+                        personResult = null;
+    
+                        reject(personResult);
 
-            (result) => {
-                
-                this.personUtils.hydratePerson(personResult, result);
+                    }
+    
+                },
+                (err) => {
 
-            },
-            (err) => {
-                
-                personResult = undefined;
+                    reject(err);
+    
+                }
+    
+            );
 
-            }
+        });    
 
-        );
-
-        return personResult;
+        return getPersonByEmailPromise;
 
     }
 
     suscribePerson(personId) {
         
-        //Rename DAO method
-        const updateStatePromise = this.personDao.updateStateById(personId);
+        let suscribePersonPromise = new Promise((resolve, reject) =>{
 
-        let personResult = personUtils.newEmptyPerson();
+            const updateStatePromise = this.personDao.updateStateById(personId);
+    
+            let personResult = this.personUtils.newEmptyPerson();
+    
+            updateStatePromise.then(
+    
+                (result) => {
+    
+                    if(result){
 
-        updateStatePromise.then(
+                        this.personUtils.hydratePerson(personResult, result);
+                    
+                        resolve(personResult);
+                    
+                    }
+                    else{
+                        
+                        personResult = undefined;
 
-            (result) => {
+                        reject(personResult);
 
-                this.personUtils.hydratePerson(personResult, result);
+                    }
+    
+                },
+                (err) => {
+    
+                    personResult = undefined;
 
-            },
-            (err) => {
+                    reject(personResult);
+    
+                }
+    
+            );
+        });
 
-                personResult = undefined;
-
-            }
-
-        );
-
-        return personResult;
+        return suscribePersonPromise;
 
     }
 
@@ -69,7 +103,7 @@ class BotPersistenceFacade {
             listMessageId: undefined
         }
         
-        const sendBirthdayMessagePromise = messagesDao.createMessage(sentMessage, personIdReciever);
+        const sendBirthdayMessagePromise = messageDao.createMessage(sentMessage, personIdReciever);
         
         sendBirthdayMessagePromise.then(
 
@@ -93,27 +127,46 @@ class BotPersistenceFacade {
     }
 
     registerUserAddress(personId, personAdress) {
+    
+        let registerAddressPromise = new Promise((resolve, reject) =>{
+    
+            let personResult = this.personUtils.newEmptyPerson();
+            
+            const registerAddressDaoPromise = this.personDao.updateAddressBotById(personId, personAdress);
+    
+            registerAddressDaoPromise.then(
+    
+                (result) => {
+        
+                    if(result == null){
+                        
+                        this.personUtils.hydratePerson(personResult, result);
+                        
+                        resolve(personResult);
 
-        const registerAddressPromise = messagesDao.updateAddressBotById(personId, personAdress);
+                    }
+                    else{
+                        
+                        personResult = undefined;
+                        
+                        reject(personResult);
+                    
+                    }
+    
+                },
+                (err) => {
+    
+                    personResult = undefined;
 
-        let personResult = personUtils.newEmptyPerson();
+                    reject(personResult);
 
-        registerAddressPromise.then(
+                }
+    
+            );
 
-            (result) => {
+        });
 
-                this.personUtils.hydratePerson(personResult, result);
-
-            },
-            (err) => {
-
-                personResult = undefined;
-
-            }
-
-        );
-
-        return personResult;
+        return registerAddressPromise;
 
     }
     

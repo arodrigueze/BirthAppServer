@@ -1,4 +1,5 @@
 const personPrototype = {
+    id: undefined,
     email: undefined,
     name: undefined,
     birthdate: undefined,
@@ -17,6 +18,7 @@ class PersonUtils {
 
     hydratePerson(person, personDatabaseResult) {
 
+        person.id = personDatabaseResult.id;
         person.email = personDatabaseResult.email;
         person.name = personDatabaseResult.name;
         person.birthdate = personDatabaseResult.birthdate;
