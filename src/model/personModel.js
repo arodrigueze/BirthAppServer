@@ -8,7 +8,7 @@ const personSchema = new Schema({
   birthdate: Date,
   teamId: String,
   subscribed: Boolean,
-  skypeId: String,
+  addressBot: String,
 });
 
 const Person = mongoose.model('Person', personSchema);

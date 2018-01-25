@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const listMessagesSchema = new Schema({
-  printed: String,
+  printed: Boolean,
   year: Number,
   receiverId: String,
 });

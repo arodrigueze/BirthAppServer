@@ -36,8 +36,8 @@ router.post('/', (req, res) => {
           name: datoPerson.name,
           birthdate: datoPerson.birthdate,
           teamId: datoPerson.teamId,
-          skypeId: '',
-          subscribed: 'false',
+          addressBot: '',
+          subscribed: false,
         };
         const person = new PersonORM(dataPerson);
         person.save((err, createdTodoObject) => {

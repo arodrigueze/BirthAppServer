@@ -37,6 +37,16 @@ class PersonDao {
     });
     return this.updateStateByIdPromise;
   }
+
+  updateAddressBotById(personId,addressBotData) {
+    this.updateAddressBotByIdPromise = new Promise((resolve, reject) => {
+      personDB.findByIdAndUpdate(personId, { $set: { addressBot: addressBotData } }, (err, person) => {
+        if (err) reject(err);
+        resolve(person);
+      });
+    });
+    return this.updateAddressBotByIdPromise;
+  }
 }
 
 module.exports = PersonDao;

@@ -6,7 +6,7 @@ class ListMessagesDao {
   createListMessages(receiverIdIn) {
     this.createListMessagesPromise = new Promise((resolve, reject) => {
       const dataListMessages = {
-        printed: 'false',
+        printed: false,
         year: new Date().getFullYear(),
         receiverId: receiverIdIn,
       };
