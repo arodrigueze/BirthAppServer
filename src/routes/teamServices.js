@@ -40,6 +40,8 @@ router.post('/', (req, res) => {
 });
 
 /* End point list team */
+
+
 router.get('/', (req, res) => {
   TeamDB.find({}, (errorFind, teams) => {
     if (errorFind) {

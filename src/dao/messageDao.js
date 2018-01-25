@@ -8,9 +8,9 @@ class MessageDao {
     this.validaciones = new ValidationMessage();
   }
 
-  getMessagesByListMessageId(listMessageId) {
+  getMessagesByListMessageId(listMessageIdData) {
     this.getMessagesByListMessagesIdPromise = new Promise((resolve, reject) => {
-      MessageDB.find({ _id: listMessageId }, (err, messages) => {
+      MessageDB.find({ listMessageId: listMessageIdData }, (err, messages) => {
         if (err) {
           reject(err);
         } else {
@@ -38,7 +38,7 @@ class MessageDao {
       } else if (receiverId.localeCompare(datoMessage.senderId) === 0) {
         reject(new Error("Error: Can't send message to self"));
       } else {
-        ListMessagesModelDB.findOne({ _id: receiverId }, 'receiverId', (err, listMessages) => {
+        ListMessagesModelDB.findOne({ receiverId }, (err, listMessages) => {
           if (this.validaciones.isEmptyObject(listMessages)) {
             const listMessageDao = new ListMessageDao();
             listMessageDao.createListMessages(receiverId).then((result) => {
@@ -50,10 +50,8 @@ class MessageDao {
               const message = new MessageDB(dataMessage);
               message.save((errSave, createdTodoObject) => {
                 if (errSave) {
-                  console.log(errSave);
                   reject(errSave);
                 } else {
-                  console.log('Message created.');
                   resolve(createdTodoObject);
                 }
               });

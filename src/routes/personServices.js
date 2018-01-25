@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const PersonORM = require('../model/personModel');
 const TeamDao = require('../dao/teamDao');
+const PersonDao = require('../dao/personDao');
 const Validations = require('../utils/validations');
 
 /* End point create person */
@@ -30,7 +31,6 @@ router.post('/', (req, res) => {
       if (validation.isEmptyObject(result)) {
         res.status(500).json({ status: 'Error: Team Id not exist.' });
       } else {
-        console.log('Team found-------------', result);
         const dataPerson = {
           email: datoPerson.email,
           name: datoPerson.name,
@@ -39,19 +39,13 @@ router.post('/', (req, res) => {
           addressBot: '',
           subscribed: false,
         };
-        const person = new PersonORM(dataPerson);
-        person.save((err, createdTodoObject) => {
-          if (err) {
-            console.log(err);
-            res.status(500).send(err);
-          } else {
-            console.log('Person created on db');
-            res.send(createdTodoObject);
-          }
+        this.persondao = new PersonDao().createPerson(dataPerson).then((personCreated) => {
+          res.send(personCreated);
+        }, (error) => {
+          res.status(500).send(error);
         });
       }
     }, (err) => {
-      console.log('Errores team');
       res.status(500).send(err);
     });
   }

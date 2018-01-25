@@ -13,12 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 /* Route for person */
 const person = require('./routes/personServices');
 
-app.use('/person', person);
-
-/* Route for message */
-const message = require('./routes/messageService');
-
-app.use('/message', message);
+app.use('/persons', person);
 
 /* Route for message */
 const listMessages = require('./routes/listMessagesService');
@@ -28,7 +23,7 @@ app.use('/listMessages', listMessages);
 /* Route for team */
 const team = require('./routes/teamServices');
 
-app.use('/team', team);
+app.use('/teams', team);
 
 /* Route for bot chat */
 const botService = require('./routes/botServices');
@@ -39,13 +34,6 @@ app.use('/bot', botService);
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(configurationServer.mongodbURL, (err) => {
-  if (err) {
-    console.log('Error de conexion mongodb');
-    console.log(err);
-  }
-});
+mongoose.connect(configurationServer.mongodbURL);
 
-app.listen(3000, () => {
-  console.log('server on port 3000!');
-});
+app.listen(3000);

@@ -1,8 +1,12 @@
+/* eslint class-methods-use-this: ["error",
+ { "exceptMethods": ["isEmptyString","isEmptyObject"] }] */
+
 class Validations {
   /* Method for validate if string is empty
     @param word
     String to be validated
     */
+
   isEmptyString(word) {
     if (word.length === 0 || word.isEmpty || word.trim().length === 0) return true;
     return false;
