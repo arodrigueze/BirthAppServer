@@ -1,4 +1,4 @@
-var configServer ={};
+const configServer = {};
 
 configServer.mongodbURL = 'mongodb://localhost/birthapp';
 configServer.emailProvider = 'gmail';

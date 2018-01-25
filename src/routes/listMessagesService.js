@@ -1,40 +1,70 @@
-var express = require('express');
-var router = express.Router();
-var validationMessage = require('../utils/validations');
-var PersonDB = require('../model/personModel.js');
-var ListMessagesDB = require('../model/listMessagesModel.js');
+const express = require('express');
 
-router.get('/', function (req, res, next) {
-    var datoListMessage = req.body;
-    var validaciones = new validationMessage();
+const router = express.Router();
+const PersonDB = require('../model/personModel');
+const MessageDB = require('../model/messageModel');
+const ListMessagesDB = require('../model/listMessagesModel');
+const Validations = require('../utils/validations');
 
-    ListMessagesDB.find(function (err, listMessages) {
-        if (err) {
-            res.status(500).send(err)
-        } else {
-            res.send(listMessages);
-        }
-    });
-
-});
-
-router.get('/byId', function (req, res, next) {
-    var datoListMessage = req.body;
-    var validaciones = new validationMessage();
-
-    if (validaciones.isEmptyObject(datoListMessage.receiverId)) {
-        res.json({ "status": "Error: receiverId is missing" });
-    } else if (validaciones.isEmptyString(datoListMessage.receiverId)) {
-        res.json({ "status": "Error: receiverId is empty" });
+router.get('/', (req, res) => {
+  const listMessageWithPersonNameJson = { listMessagesData: [] };
+  ListMessagesDB.find({}, (errorListMessagesDb, listMessages) => {
+    if (errorListMessagesDb) {
+      res.status(500).send(errorListMessagesDb);
     } else {
-        ListMessagesDB.find({ '_id': datoListMessage.receiverId },function (err, listMessage) {
-            if (err) {
-                res.status(500).send(err)
-            } else {
-                res.send(listMessage);
-            }
-        });
+      PersonDB.find({}, (errorFind, person) => {
+        if (errorFind) {
+          res.status(500).send(errorFind);
+        } else {
+          Object.entries(listMessages).forEach(([, value]) => {
+            const listMessageWithPersonName = {
+              _id: '', printed: '', year: '', receiverId: '', name: '',
+            };
+            listMessageWithPersonName._id = value._id;
+            listMessageWithPersonName.printed = value.printed;
+            listMessageWithPersonName.year = value.year;
+            listMessageWithPersonName.receiverId = value.receiverId;
+            Object.entries(person).forEach(([, value1]) => {
+              if (value.receiverId.localeCompare(value1._id) === 0) {
+                listMessageWithPersonName.name = value1.name;
+              }
+            });
+            listMessageWithPersonNameJson.listMessagesData.push(listMessageWithPersonName);
+          });
+          res.send(listMessageWithPersonNameJson.listMessagesData);
+        }
+      });
     }
+  });
 });
 
+router.get('/:_id/messages', (req, res) => {
+  const validaciones = new Validations();
+  if (validaciones.isEmptyObject(req.params._id)) {
+    res.status(500).json({ status: 'Error: _id parameter is missing in body' });
+  } else if (validaciones.isEmptyString(req.params._id)) {
+    res.status(500).json({ status: 'Error: _id is empty' });
+  } else {
+    MessageDB.find({ listMessageId: req.params._id }, (err, mensajes) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.send(mensajes);
+      }
+    });
+  }
+});
+
+router.put('/', (req, res) => {
+  const datoListMessage = req.body;
+  ListMessagesDB.findByIdAndUpdate(
+    datoListMessage._id, {
+      $set: { printed: datoListMessage.printed },
+    },
+    (err, listMessagesUpdate) => {
+      if (err) res.status(500).send(err);
+      res.send(listMessagesUpdate);
+    },
+  );
+});
 module.exports = router;
