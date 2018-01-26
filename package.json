@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "startHeroku": "node src/app.js",
-    "start": "npm run build:live",
+    "start": "npm run startHeroku",
     "build:live": "nodemon ./src/app.js",
     "pretest": "eslint src --fix",
     "test": "jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json"
