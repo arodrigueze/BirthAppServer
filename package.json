@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "startAWS": "node src/app.js",
+    "startHeroku": "node src/app.js",
     "start": "npm run build:live",
     "build:live": "nodemon ./src/app.js",
     "pretest": "eslint src --fix",

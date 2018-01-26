@@ -220,6 +220,6 @@ setInterval(() => {
 
     );
 
-}, 1000 * 20);
+}, 1000 * 60);
 
 module.exports = router;
