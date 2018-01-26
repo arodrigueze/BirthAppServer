@@ -1,6 +1,7 @@
 const configServer = {};
 
-configServer.mongodbURL = 'mongodb://localhost/birthapp';
+// configServer.mongodbURL = 'mongodb://localhost/birthapp';
+configServer.mongodbURL = 'mongodb://birthuser:birthuser@ds115758.mlab.com:15758/heroku_dpsccprq';
 configServer.emailProvider = 'gmail';
 configServer.emailUser = 'birthdayspecialmessage@gmail.com';
 configServer.emailPass = 'birthdayspecialmessage2018';
