@@ -16,6 +16,22 @@ class TeamDao {
     });
     return this.getTeamByIdPromise;
   }
+
+  getTeams() {
+    this.getTeamsPromise = new Promise((resolve, reject) => {
+      teamDb.find({},(err, teamsFound) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(teamsFound);
+        }
+      });
+    });
+    return this.getTeamsPromise;
+  }
+
+
+
 }
 
 module.exports = TeamDao;
