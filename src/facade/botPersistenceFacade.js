@@ -103,7 +103,7 @@ class BotPersistenceFacade {
             listMessageId: undefined
         }
         
-        const sendBirthdayMessagePromise = messageDao.createMessage(sentMessage, personIdReciever);
+        const sendBirthdayMessagePromise = this.messageDao.createMessage(sentMessage, personIdReciever);
         
         sendBirthdayMessagePromise.then(
 
@@ -130,9 +130,11 @@ class BotPersistenceFacade {
     
         let registerAddressPromise = new Promise((resolve, reject) =>{
     
+            let addressString = JSON.stringify(personAdress);
+
             let personResult = this.personUtils.newEmptyPerson();
             
-            const registerAddressDaoPromise = this.personDao.updateAddressBotById(personId, personAdress);
+            const registerAddressDaoPromise = this.personDao.updateAddressBotById(personId, addressString);
     
             registerAddressDaoPromise.then(
     

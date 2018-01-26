@@ -90,7 +90,7 @@ var emailDialog = bot.dialog('emailDialog', [
 
                 session.userData.person = result;
 
-                // botPersistence.registerUserAddress(session.userData.person.id, session.userData.userAddress);
+                botPersistence.registerUserAddress(session.userData.person.id, session.userData.userAddress);
                 session.endDialog('Thanks!');
 
             },
@@ -135,9 +135,8 @@ var birthdayConfirmationDialog = bot.dialog('birthdayConfirmation', [
     (session) => {
 
         const birthdayPerson = birthdayPeople[0];
-        const birthdayPersonName = birthdayPerson.name;
 
-        let birthdayMessageQuestion = 'It\'s ${birthdayPersonName}\'s birthday tomorrow.\nDo you wish to send him a message?';
+        let birthdayMessageQuestion = 'It\'s ' + birthdayPerson.name + ' birthday tomorrow.\nDo you wish to send him a message?';
 
         builder.Prompts.choice(session, birthdayMessageQuestion, ['Hell yeah!', 'Nah, screw that guy'], { listStyle: builder.ListStyle.button });
     },
@@ -175,10 +174,10 @@ var birthdayMessageDialog = bot.dialog('birthdayMessage', [
 
 ]);
 
-var timeCheck = setInterval(() => {
+setInterval(() => {
 
     var date = new Date();
-    var day = date.getDay();
+    var day = date.getDate();
     var month = date.getMonth();
     var hour = date.getHours();
     var minute = date.getMinutes();
@@ -197,18 +196,21 @@ var timeCheck = setInterval(() => {
             for (let i = 0; i < result.length; i++) {
                 let current = result[i];
 
-                if (current.suscribed) {
+                if (current.subscribed) {
                     suscribedPeople.push(current);
                 }
 
-                if (current.birthdate.getDay() === day && current.birthdate.getMonth() === month) {
+                if (current.birthdate.getDate() === day && current.birthdate.getMonth() === month) {
                     birthdayPeople.push(current);
                 }
 
             }
 
             for (let i = 0; i < suscribedPeople.length; i++) {
-                bot.beginDialog(suscribedPeople[i].suscribed, 'birthdayConfirmation');
+
+                let addressSuscribedUser = JSON.parse(suscribedPeople[i].addressBot);
+
+                bot.beginDialog(addressSuscribedUser, 'birthdayConfirmation');
             }
 
         },
@@ -218,6 +220,6 @@ var timeCheck = setInterval(() => {
 
     );
 
-}, 1000 * 5);
+}, 1000 * 20);
 
 module.exports = router;
