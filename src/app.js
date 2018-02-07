@@ -1,7 +1,7 @@
+var port = process.env.PORT || 3000;
 const express = require('express');
 const bodyParser = require('body-parser');
 const configurationServer = require('./configServer');
-
 const app = express();
 
 app.use((req, res, next) => { res.header('Access-Control-Allow-Origin', '*'); res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); next(); });
@@ -34,6 +34,14 @@ app.use('/bot', botService);
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(configurationServer.mongodbURL);
 
-app.listen(3000);
+mongoose.connect(configurationServer.mongodbURL, function (err) {
+  if (err) {
+    console.log("Error de conexion mongodb");
+    console.log(err);
+  }
+});
+
+app.listen(port, function () {
+  console.log('server on port %s!', port);
+});
